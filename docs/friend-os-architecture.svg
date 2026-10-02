@@ -1,0 +1,439 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1380" width="100%" height="100%" style="background-color: #070A11; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <defs>
+    <!-- Background Gradients -->
+    <radialGradient id="bgGlowTop" cx="50%" cy="10%" r="50%">
+      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#064e3b" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#070A11" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="engineGlow" cx="50%" cy="65%" r="40%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.14"/>
+      <stop offset="70%" stop-color="#10b981" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#070A11" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="insightGlow" cx="50%" cy="90%" r="35%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.16"/>
+      <stop offset="80%" stop-color="#070A11" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Card Background Gradients -->
+    <linearGradient id="cardGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111827" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#0b1120" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="frontendGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#0f172a" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#090d16" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="engineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2d1b04" stop-opacity="0.75"/>
+      <stop offset="50%" stop-color="#141c2e" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#09141f" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="insightCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a1603" stop-opacity="0.8"/>
+      <stop offset="40%" stop-color="#0f172a" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#061a14" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <!-- Accent Border Gradients -->
+    <linearGradient id="borderHeader" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <linearGradient id="borderEngine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="borderInsight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+
+    <!-- Marker Arrows -->
+    <marker id="arrowEmerald" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#34d399"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#818cf8"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#c084fc"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M 1 1 L 7 4 L 1 7 Z" fill="#f59e0b"/>
+    </marker>
+
+    <!-- Drop Shadows -->
+    <filter id="shadowBox" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    <filter id="glowEngine" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="0" stdDeviation="15" flood-color="#f59e0b" flood-opacity="0.25"/>
+    </filter>
+    <filter id="glowInsight" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="0" stdDeviation="18" flood-color="#f59e0b" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Ambient Glow Backgrounds -->
+  <rect x="0" y="0" width="1100" height="1380" fill="#070A11"/>
+  <rect x="0" y="0" width="1100" height="400" fill="url(#bgGlowTop)"/>
+  <rect x="0" y="550" width="1100" height="500" fill="url(#engineGlow)"/>
+  <rect x="0" y="950" width="1100" height="430" fill="url(#insightGlow)"/>
+
+  <!-- Subtle Blueprint Grid lines -->
+  <g opacity="0.04" stroke="#ffffff" stroke-width="1">
+    <line x1="50" y1="0" x2="50" y2="1380"/>
+    <line x1="275" y1="0" x2="275" y2="1380"/>
+    <line x1="550" y1="0" x2="550" y2="1380"/>
+    <line x1="825" y1="0" x2="825" y2="1380"/>
+    <line x1="1050" y1="0" x2="1050" y2="1380"/>
+    <line x1="0" y1="100" x2="1100" y2="100"/>
+    <line x1="0" y1="350" x2="1100" y2="350"/>
+    <line x1="0" y1="650" x2="1100" y2="650"/>
+    <line x1="0" y1="950" x2="1100" y2="950"/>
+    <line x1="0" y1="1250" x2="1100" y2="1250"/>
+  </g>
+
+  <!-- ==================================================================== -->
+  <!-- 1. HEADER SECTION                                                    -->
+  <!-- ==================================================================== -->
+  <g transform="translate(550, 45)" text-anchor="middle">
+    <!-- Brand Title -->
+    <text font-family="'JetBrains Mono', monospace" font-size="34" font-weight="900" fill="#ffffff" letter-spacing="-1">
+      FRIEND<tspan fill="#34d399">.</tspan>OS
+    </text>
+    <!-- Tagline -->
+    <text y="32" font-size="16" font-style="italic" fill="#94a3b8" letter-spacing="0.5">
+      &quot;An AI memory that remembers what was waiting for what.&quot;
+    </text>
+
+    <!-- Top Architecture Trust Badges -->
+    <g transform="translate(0, 52)">
+      <!-- Badge 1: Local First -->
+      <g transform="translate(-330, 0)">
+        <rect x="0" y="0" width="130" height="26" rx="13" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.2"/>
+        <circle cx="14" cy="13" r="4" fill="#818cf8"/>
+        <text x="70" y="17" font-family="monospace" font-size="10.5" font-weight="bold" fill="#c7d2fe" text-anchor="middle">LOCAL-FIRST</text>
+      </g>
+      <!-- Badge 2: SQLite -->
+      <g transform="translate(-185, 0)">
+        <rect x="0" y="0" width="140" height="26" rx="13" fill="#0f172a" stroke="#38bdf8" stroke-width="1.2"/>
+        <circle cx="14" cy="13" r="4" fill="#38bdf8"/>
+        <text x="75" y="17" font-family="monospace" font-size="10.5" font-weight="bold" fill="#bae6fd" text-anchor="middle">SQLITE STORAGE</text>
+      </g>
+      <!-- Badge 3: Ollama + Qwen3 4B -->
+      <g transform="translate(-30, 0)">
+        <rect x="0" y="0" width="175" height="26" rx="13" fill="#2e1065" stroke="#a855f7" stroke-width="1.2"/>
+        <circle cx="14" cy="13" r="4" fill="#c084fc"/>
+        <text x="92" y="17" font-family="monospace" font-size="10.5" font-weight="bold" fill="#e9d5ff" text-anchor="middle">OLLAMA • QWEN3 4B</text>
+      </g>
+      <!-- Badge 4: No Cloud AI -->
+      <g transform="translate(160, 0)">
+        <rect x="0" y="0" width="165" height="26" rx="13" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+        <circle cx="14" cy="13" r="4" fill="#34d399"/>
+        <text x="88" y="17" font-family="monospace" font-size="10.5" font-weight="bold" fill="#a7f3d0" text-anchor="middle">ZERO CLOUD RELAYS</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ==================================================================== -->
+  <!-- 2. LAYER 1: USER INTERFACE / BROWSER CLIENT (Next.js)                -->
+  <!-- ==================================================================== -->
+  <g transform="translate(230, 145)" filter="url(#shadowBox)">
+    <!-- Container -->
+    <rect width="640" height="135" rx="16" fill="url(#frontendGrad)" stroke="#334155" stroke-width="1.5"/>
+    <rect width="640" height="3" rx="1.5" fill="url(#borderHeader)"/>
+
+    <!-- Browser Dots -->
+    <circle cx="24" cy="20" r="4.5" fill="#ef4444" opacity="0.8"/>
+    <circle cx="38" cy="20" r="4.5" fill="#f59e0b" opacity="0.8"/>
+    <circle cx="52" cy="20" r="4.5" fill="#10b981" opacity="0.8"/>
+
+    <!-- Layer Tag -->
+    <rect x="500" y="11" width="122" height="20" rx="10" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+    <text x="561" y="24" font-family="monospace" font-size="9" font-weight="bold" fill="#94a3b8" text-anchor="middle">CLIENT LAYER</text>
+
+    <!-- Content -->
+    <text x="24" y="52" font-family="monospace" font-size="11" font-weight="bold" fill="#818cf8" letter-spacing="1">USER INTERFACE • WEB CLIENT</text>
+    <text x="24" y="74" font-size="18" font-weight="bold" fill="#ffffff">Browser (Next.js 16 / React 19 / TypeScript / Tailwind CSS)</text>
+    
+    <!-- Badges inside UI -->
+    <g transform="translate(24, 92)">
+      <!-- Pill 1 -->
+      <rect x="0" y="0" width="135" height="24" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+      <text x="67" y="16" font-family="monospace" font-size="10" fill="#cbd5e1" text-anchor="middle">Memory Timeline</text>
+      <!-- Pill 2 -->
+      <rect x="145" y="0" width="135" height="24" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+      <text x="212" y="16" font-family="monospace" font-size="10" fill="#cbd5e1" text-anchor="middle">Status Filter &amp; Search</text>
+      <!-- Pill 3 -->
+      <rect x="290" y="0" width="145" height="24" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+      <text x="362" y="16" font-family="monospace" font-size="10" fill="#cbd5e1" text-anchor="middle">Proactive Alerts Card</text>
+      <!-- Pill 4 -->
+      <rect x="445" y="0" width="145" height="24" rx="6" fill="#3b0764" stroke="#a855f7" stroke-width="1"/>
+      <text x="517" y="16" font-family="monospace" font-size="10" font-weight="bold" fill="#e9d5ff" text-anchor="middle">⚡ 60s Demo Mode</text>
+    </g>
+  </g>
+
+  <!-- Flow Arrow: UI -> Backend -->
+  <g stroke="#818cf8" stroke-width="2" fill="none">
+    <line x1="550" y1="280" x2="550" y2="330" marker-end="url(#arrowIndigo)"/>
+  </g>
+  <g transform="translate(550, 305)" text-anchor="middle">
+    <rect x="-85" y="-10" width="170" height="20" rx="10" fill="#070A11" stroke="#475569" stroke-width="1"/>
+    <text y="4" font-family="monospace" font-size="10" font-weight="bold" fill="#a5b4fc">REST API (fetch / HTTP)</text>
+  </g>
+
+  <!-- ==================================================================== -->
+  <!-- 3. LAYER 2: BACKEND API (FastAPI)                                    -->
+  <!-- ==================================================================== -->
+  <g transform="translate(230, 335)" filter="url(#shadowBox)">
+    <!-- Container -->
+    <rect width="640" height="115" rx="16" fill="url(#cardGradDark)" stroke="#059669" stroke-width="1.5"/>
+    <rect width="640" height="3" rx="1.5" fill="#34d399"/>
+
+    <!-- Layer Tag -->
+    <rect x="500" y="11" width="122" height="20" rx="10" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+    <text x="561" y="24" font-family="monospace" font-size="9" font-weight="bold" fill="#6ee7b7" text-anchor="middle">API SERVICE</text>
+
+    <!-- Content -->
+    <text x="24" y="42" font-family="monospace" font-size="11" font-weight="bold" fill="#34d399" letter-spacing="1">APPLICATION SERVER • ORCHESTRATION</text>
+    <text x="24" y="66" font-size="18" font-weight="bold" fill="#ffffff">FastAPI Backend (Python 3.10+ / Uvicorn)</text>
+    
+    <!-- Endpoints Bar -->
+    <g transform="translate(24, 78)">
+      <text font-family="monospace" font-size="10" fill="#94a3b8">
+        <tspan fill="#34d399">POST</tspan> /memories  •  <tspan fill="#38bdf8">GET</tspan> /insights  •  <tspan fill="#818cf8">PATCH</tspan> /commitments/{id}  •  <tspan fill="#c084fc">POST</tspan> /analyze  •  <tspan fill="#f59e0b">POST</tspan> /demo/reset
+      </text>
+    </g>
+  </g>
+
+  <!-- Branching Arrows from FastAPI down to SQLite (Left) and Qwen3 (Right) -->
+  <g stroke-width="2" fill="none">
+    <!-- Left Branch: to SQLite -->
+    <path d="M 430 450 L 430 480 L 290 480 L 290 515" stroke="#38bdf8" marker-end="url(#arrowEmerald)"/>
+    <!-- Right Branch: to Ollama Qwen3 -->
+    <path d="M 670 450 L 670 480 L 810 480 L 810 515" stroke="#c084fc" marker-end="url(#arrowPurple)"/>
+  </g>
+  <text x="350" y="475" font-family="monospace" font-size="9.5" fill="#7dd3fc" text-anchor="middle">Store / Query Memories</text>
+  <text x="750" y="475" font-family="monospace" font-size="9.5" fill="#d8b4fe" text-anchor="middle">Extract Structured JSON</text>
+
+  <!-- ==================================================================== -->
+  <!-- 4. LAYER 3: DUAL FOUNDATION (SQLite Storage vs Qwen3 Understanding)  -->
+  <!-- ==================================================================== -->
+
+  <!-- LEFT: SQLite Local Storage -->
+  <g transform="translate(80, 520)" filter="url(#shadowBox)">
+    <rect width="430" height="210" rx="16" fill="url(#cardGradDark)" stroke="#0284c7" stroke-width="1.5"/>
+    <rect width="430" height="3" rx="1.5" fill="#38bdf8"/>
+
+    <!-- Header -->
+    <rect x="290" y="11" width="125" height="20" rx="10" fill="#082f49" stroke="#0284c7" stroke-width="1"/>
+    <text x="352" y="24" font-family="monospace" font-size="9" font-weight="bold" fill="#7dd3fc" text-anchor="middle">LOCAL DATABASE</text>
+    
+    <text x="20" y="38" font-family="monospace" font-size="11" font-weight="bold" fill="#38bdf8">PERSISTENT STORAGE</text>
+    <text x="20" y="60" font-size="17" font-weight="bold" fill="#ffffff">SQLite (data/friend_os.db)</text>
+    
+    <!-- Details -->
+    <g transform="translate(20, 78)" font-family="monospace" font-size="10.5">
+      <rect x="0" y="0" width="390" height="52" rx="8" fill="#031525" stroke="#0c4a6e" stroke-width="1"/>
+      <text x="12" y="20" fill="#7dd3fc" font-weight="bold">Table 1: memories</text>
+      <text x="12" y="38" fill="#94a3b8">id, content, memory_type, status, created_at</text>
+
+      <rect x="0" y="60" width="390" height="58" rx="8" fill="#031525" stroke="#0c4a6e" stroke-width="1"/>
+      <text x="12" y="80" fill="#7dd3fc" font-weight="bold">Table 2: commitments</text>
+      <text x="12" y="96" fill="#94a3b8">task, dependency, deadline, status, source_id, evidence_id</text>
+      <text x="12" y="111" fill="#34d399">States: waiting ➔ unblocked ➔ completed ➔ archived</text>
+    </g>
+  </g>
+
+  <!-- RIGHT: Ollama + Qwen3 4B Local AI Engine -->
+  <g transform="translate(590, 520)" filter="url(#shadowBox)">
+    <rect width="430" height="210" rx="16" fill="url(#cardGradDark)" stroke="#9333ea" stroke-width="1.5"/>
+    <rect width="430" height="3" rx="1.5" fill="#c084fc"/>
+
+    <!-- Header -->
+    <rect x="290" y="11" width="125" height="20" rx="10" fill="#3b0764" stroke="#9333ea" stroke-width="1"/>
+    <text x="352" y="24" font-family="monospace" font-size="9" font-weight="bold" fill="#d8b4fe" text-anchor="middle">ON-DEVICE AI</text>
+    
+    <text x="20" y="38" font-family="monospace" font-size="11" font-weight="bold" fill="#c084fc">LANGUAGE UNDERSTANDING</text>
+    <text x="20" y="60" font-size="17" font-weight="bold" fill="#ffffff">Ollama / Qwen3 4B (Local)</text>
+    
+    <!-- Details -->
+    <g transform="translate(20, 78)">
+      <rect x="0" y="0" width="390" height="65" rx="8" fill="#1b082e" stroke="#581c87" stroke-width="1"/>
+      <text x="12" y="20" font-family="monospace" font-size="10.5" font-weight="bold" fill="#e9d5ff">Structured Schema Extraction:</text>
+      <text x="12" y="38" font-family="monospace" font-size="10" fill="#cbd5e1">• decision, task, dependency</text>
+      <text x="12" y="52" font-family="monospace" font-size="10" fill="#cbd5e1">• deadline, next_action, status</text>
+
+      <!-- Crucial Clarification Banner -->
+      <rect x="0" y="73" width="390" height="45" rx="8" fill="#2d0639" stroke="#c084fc" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="12" y="90" font-family="monospace" font-size="9.5" font-weight="bold" fill="#f43f5e">⚠ DOES NOT DECIDE UNBLOCKING</text>
+      <text x="12" y="106" font-size="9.5" fill="#e2e8f0">Extracts text fields; hands off to deterministic engine.</text>
+    </g>
+  </g>
+
+  <!-- Convergence Arrows: SQLite & Qwen3 -> Dependency Engine -->
+  <g stroke-width="2" fill="none">
+    <!-- From SQLite to Engine -->
+    <path d="M 295 730 L 295 780 L 460 780 L 460 805" stroke="#38bdf8" marker-end="url(#arrowAmber)"/>
+    <!-- From Qwen3/FastAPI to Engine -->
+    <path d="M 805 730 L 805 780 L 640 780 L 640 805" stroke="#c084fc" marker-end="url(#arrowAmber)"/>
+  </g>
+  <text x="360" y="773" font-family="monospace" font-size="9.5" fill="#7dd3fc" text-anchor="middle">Stored Commitments</text>
+  <text x="730" y="773" font-family="monospace" font-size="9.5" fill="#d8b4fe" text-anchor="middle">New Evidence Memory</text>
+
+  <!-- ==================================================================== -->
+  <!-- 5. LAYER 4: THE CORE DIFFERENTIATOR — DEPENDENCY ENGINE (matcher.py)  -->
+  <!-- ==================================================================== -->
+  <g transform="translate(150, 810)" filter="url(#glowEngine)">
+    <!-- Prominent Container -->
+    <rect width="800" height="230" rx="18" fill="url(#engineGrad)" stroke="#f59e0b" stroke-width="2"/>
+    <rect width="800" height="4" rx="2" fill="url(#borderEngine)"/>
+
+    <!-- Key Differentiator Badge -->
+    <rect x="580" y="14" width="200" height="24" rx="12" fill="#78350f" stroke="#f59e0b" stroke-width="1.2"/>
+    <text x="680" y="30" font-family="monospace" font-size="10.5" font-weight="900" fill="#fef3c7" text-anchor="middle">★ KEY DIFFERENTIATOR</text>
+
+    <!-- Header -->
+    <text x="28" y="44" font-family="monospace" font-size="12" font-weight="bold" fill="#f59e0b" letter-spacing="1.5">DETERMINISTIC REASONING &amp; DEPENDENCY RESOLUTION</text>
+    <text x="28" y="72" font-size="22" font-weight="900" fill="#ffffff">Dependency Engine (backend/matcher.py)</text>
+    <text x="28" y="93" font-size="12.5" fill="#94a3b8">
+      Zero LLM Hallucinations: Strict, rule-based algorithmic verification linking evidence to pending tasks.
+    </text>
+
+    <!-- 4 Rule Cards Grid -->
+    <g transform="translate(24, 110)">
+      <!-- Rule 1: Entity Extraction -->
+      <g transform="translate(0, 0)">
+        <rect width="180" height="80" rx="10" fill="#091220" stroke="#1e293b" stroke-width="1"/>
+        <circle cx="16" cy="18" r="6" fill="#38bdf8"/>
+        <text x="30" y="22" font-family="monospace" font-size="10" font-weight="bold" fill="#7dd3fc">1. Entity Extraction</text>
+        <text x="12" y="42" font-size="10" fill="#94a3b8">Tokenizes dependency nouns</text>
+        <text x="12" y="56" font-size="10" fill="#94a3b8">&quot;certificate&quot;, &quot;draft&quot;,</text>
+        <text x="12" y="70" font-family="monospace" font-size="9" fill="#38bdf8">&quot;recommendation letter&quot;</text>
+      </g>
+
+      <!-- Rule 2: Action Matching & Stemming -->
+      <g transform="translate(190, 0)">
+        <rect width="180" height="80" rx="10" fill="#091220" stroke="#1e293b" stroke-width="1"/>
+        <circle cx="16" cy="18" r="6" fill="#34d399"/>
+        <text x="30" y="22" font-family="monospace" font-size="10" font-weight="bold" fill="#6ee7b7">2. Action Stemming</text>
+        <text x="12" y="42" font-size="10" fill="#94a3b8">Normalizes verb roots</text>
+        <text x="12" y="56" font-size="10" fill="#94a3b8">receive ➔ receiv ➔ &quot;received&quot;</text>
+        <text x="12" y="70" font-family="monospace" font-size="9" fill="#34d399">review ➔ review ➔ &quot;reviewed&quot;</text>
+      </g>
+
+      <!-- Rule 3: Negation Guards -->
+      <g transform="translate(380, 0)">
+        <rect width="180" height="80" rx="10" fill="#091220" stroke="#1e293b" stroke-width="1"/>
+        <circle cx="16" cy="18" r="6" fill="#f43f5e"/>
+        <text x="30" y="22" font-family="monospace" font-size="10" font-weight="bold" fill="#fda4af">3. Negation Guards</text>
+        <text x="12" y="42" font-size="10" fill="#94a3b8">Blocks false positives</text>
+        <text x="12" y="56" font-size="10" fill="#f43f5e">&quot;still haven't received&quot;</text>
+        <text x="12" y="70" font-family="monospace" font-size="9" fill="#f43f5e">&quot;not yet reviewed&quot; ➔ REJECT</text>
+      </g>
+
+      <!-- Rule 4: Future/Hypothetical Guards -->
+      <g transform="translate(570, 0)">
+        <rect width="180" height="80" rx="10" fill="#091220" stroke="#1e293b" stroke-width="1"/>
+        <circle cx="16" cy="18" r="6" fill="#fbbf24"/>
+        <text x="30" y="22" font-family="monospace" font-size="10" font-weight="bold" fill="#fde68a">4. Future Guards</text>
+        <text x="12" y="42" font-size="10" fill="#94a3b8">Filters speculation</text>
+        <text x="12" y="56" font-size="10" fill="#fbbf24">&quot;if I receive&quot;, &quot;when I get&quot;</text>
+        <text x="12" y="70" font-family="monospace" font-size="9" fill="#fbbf24">&quot;hope to finish&quot; ➔ REJECT</text>
+      </g>
+    </g>
+
+    <!-- Footer guarantee tag -->
+    <text x="400" y="214" font-family="monospace" font-size="10" fill="#a7f3d0" text-anchor="middle">
+      ✓ Invariant Verified: Evidence memory must be a distinct, subsequent record (source_id ≠ evidence_id)
+    </text>
+  </g>
+
+  <!-- Flow Arrow: Engine -> Proactive Insight -->
+  <g stroke="#f59e0b" stroke-width="2.5" fill="none">
+    <line x1="550" y1="1040" x2="550" y2="1080" marker-end="url(#arrowAmber)"/>
+  </g>
+  <g transform="translate(550, 1060)" text-anchor="middle">
+    <rect x="-140" y="-10" width="280" height="20" rx="10" fill="#1c1917" stroke="#f59e0b" stroke-width="1"/>
+    <text y="4" font-family="monospace" font-size="10" font-weight="bold" fill="#fef3c7">Prerequisite Satisfied ➔ State: UNBLOCKED</text>
+  </g>
+
+  <!-- ==================================================================== -->
+  <!-- 6. LAYER 5: PROACTIVE INSIGHT OUTPUT ("YOU MAY BE FORGETTING")       -->
+  <!-- ==================================================================== -->
+  <g transform="translate(180, 1085)" filter="url(#glowInsight)">
+    <!-- Proactive Card -->
+    <rect width="740" height="215" rx="18" fill="url(#insightCardGrad)" stroke="#f59e0b" stroke-width="2"/>
+    <rect width="740" height="4" rx="2" fill="url(#borderInsight)"/>
+
+    <!-- Intervention Badge -->
+    <g transform="translate(24, 20)">
+      <rect width="210" height="26" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="12" y="17" font-size="14">⚡</text>
+      <text x="32" y="17" font-family="monospace" font-size="11" font-weight="900" fill="#fef3c7">YOU MAY BE FORGETTING</text>
+
+      <rect x="220" y="3" width="110" height="20" rx="6" fill="#14532d" stroke="#22c55e" stroke-width="1"/>
+      <text x="275" y="16" font-family="monospace" font-size="9.5" font-weight="bold" fill="#bbf7d0" text-anchor="middle">UNBLOCKED TASK</text>
+    </g>
+
+    <!-- Task Headline -->
+    <text x="24" y="74" font-size="11" font-family="monospace" font-weight="bold" fill="#94a3b8" letter-spacing="1">DISCOVERED UNBLOCKED COMMITMENT</text>
+    <text x="24" y="100" font-size="22" font-weight="900" fill="#ffffff" letter-spacing="-0.5">
+      &quot;Submit internship application&quot;
+    </text>
+
+    <!-- Verified Evidence Columns -->
+    <g transform="translate(24, 115)">
+      <!-- Prerequisite State -->
+      <g transform="translate(0, 0)">
+        <rect width="335" height="52" rx="10" fill="#09121a" stroke="#1e293b" stroke-width="1"/>
+        <text x="12" y="18" font-family="monospace" font-size="9.5" font-weight="bold" fill="#94a3b8">PREREQUISITE DEPENDENCY</text>
+        <text x="12" y="37" font-size="12" font-weight="bold" fill="#34d399">receive certificate ➔ <tspan fill="#6ee7b7">✓ completed</tspan></text>
+      </g>
+
+      <!-- Detected Evidence Proof -->
+      <g transform="translate(355, 0)">
+        <rect width="335" height="52" rx="10" fill="#09121a" stroke="#1e293b" stroke-width="1"/>
+        <text x="12" y="18" font-family="monospace" font-size="9.5" font-weight="bold" fill="#94a3b8">DETECTED EVIDENCE STATEMENT</text>
+        <text x="12" y="37" font-size="12" font-style="italic" fill="#fde68a">&quot;I received my certificate today.&quot;</text>
+      </g>
+    </g>
+
+    <!-- Interactive Actions -->
+    <g transform="translate(24, 180)">
+      <text font-family="monospace" font-size="10.5" fill="#94a3b8">Suggested Next Action: <tspan fill="#ffffff" font-weight="bold">Submit internship application</tspan></text>
+
+      <!-- Action Buttons -->
+      <g transform="translate(420, -8)">
+        <!-- Why Button -->
+        <rect x="0" y="0" width="80" height="24" rx="6" fill="#1c1917" stroke="#f59e0b" stroke-width="1"/>
+        <text x="40" y="16" font-family="monospace" font-size="10" font-weight="bold" fill="#fde68a" text-anchor="middle">Why? (Audit)</text>
+
+        <!-- Mark Done Button -->
+        <rect x="90" y="0" width="95" height="24" rx="6" fill="#065f46" stroke="#10b981" stroke-width="1"/>
+        <text x="137" y="16" font-family="monospace" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">✓ Mark Done</text>
+
+        <!-- Dismiss Button -->
+        <rect x="195" y="0" width="70" height="24" rx="6" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+        <text x="230" y="16" font-family="monospace" font-size="10" fill="#cbd5e1" text-anchor="middle">Dismiss</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ==================================================================== -->
+  <!-- 7. FOOTER SUMMARY                                                    -->
+  <!-- ==================================================================== -->
+  <g transform="translate(550, 1345)" text-anchor="middle">
+    <line x1="-480" y1="-15" x2="480" y2="-15" stroke="#1e293b" stroke-width="1"/>
+    <text font-family="monospace" font-size="11" fill="#64748b">
+      FRIEND.OS • Local SQLite Engine • Ollama (Qwen3 4B) • Zero OpenAI/Cloud Dependencies • 100% Deterministic Dependency Verification
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,40 @@
+# Python virtual environment & cache
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Local databases (preserve directory with .gitkeep)
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+!data/.gitkeep
+*.db
+
+# Node & Next.js
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+frontend/out/
+build/
+frontend/build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment & Editor
+.env*
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

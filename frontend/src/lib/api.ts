@@ -1,6 +1,16 @@
 import { Memory, MemoryStatus, AnalyzeResponse, SystemHealth, Insight } from "@/types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+export interface DetailedHealth {
+  status: string;
+  app: string;
+  database: string;
+  ollama: {
+    available: boolean;
+    host: string;
+    model_configured: string;
+    model_present: boolean;
+  };
+}
 
 export class ApiError extends Error {
   status?: number;
@@ -12,10 +22,23 @@ export class ApiError extends Error {
 }
 
 /**
+ * Returns dynamic API Base URL, checking for desktop Electron injection.
+ */
+export function getApiBase(): string {
+  if (typeof window !== "undefined") {
+    const win = window as unknown as { __FRIEND_OS_API_URL__?: string };
+    if (win.__FRIEND_OS_API_URL__) {
+      return win.__FRIEND_OS_API_URL__;
+    }
+  }
+  return process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+}
+
+/**
  * Checks if the FRIEND.OS backend is online and running.
  */
 export async function checkBackendHealth(): Promise<SystemHealth> {
-  const res = await fetch(`${API_BASE}/`, {
+  const res = await fetch(`${getApiBase()}/`, {
     cache: "no-store",
     signal: AbortSignal.timeout(4000),
   });
@@ -26,10 +49,24 @@ export async function checkBackendHealth(): Promise<SystemHealth> {
 }
 
 /**
+ * Fetches detailed system health including Ollama and local model availability.
+ */
+export async function getDetailedHealth(): Promise<DetailedHealth> {
+  const res = await fetch(`${getApiBase()}/health`, {
+    cache: "no-store",
+    signal: AbortSignal.timeout(4000),
+  });
+  if (!res.ok) {
+    throw new ApiError(`Detailed health check failed with status: ${res.status}`, res.status);
+  }
+  return res.json();
+}
+
+/**
  * Fetches memories with optional text search and status filter.
  */
 export async function getMemories(search?: string, status?: string): Promise<Memory[]> {
-  const url = new URL(`${API_BASE}/memories`);
+  const url = new URL(`${getApiBase()}/memories`);
   if (search && search.trim()) {
     url.searchParams.set("search", search.trim());
   }
@@ -62,7 +99,7 @@ export async function createMemory(
   if (dependency) payload.dependency = dependency;
   if (deadline) payload.deadline = deadline;
 
-  const res = await fetch(`${API_BASE}/memories`, {
+  const res = await fetch(`${getApiBase()}/memories`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -81,7 +118,7 @@ export async function updateMemoryStatus(
   id: number,
   status: MemoryStatus
 ): Promise<Memory> {
-  const res = await fetch(`${API_BASE}/memories/${id}/status`, {
+  const res = await fetch(`${getApiBase()}/memories/${id}/status`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status }),
@@ -97,7 +134,7 @@ export async function updateMemoryStatus(
  * Sends text to Qwen3 via Ollama for structured analysis.
  */
 export async function analyzeText(text: string): Promise<AnalyzeResponse> {
-  const res = await fetch(`${API_BASE}/analyze`, {
+  const res = await fetch(`${getApiBase()}/analyze`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text }),
@@ -116,7 +153,7 @@ export async function analyzeText(text: string): Promise<AnalyzeResponse> {
  * Fetches proactive unblocked insights: "What Am I Forgetting?".
  */
 export async function getInsights(): Promise<Insight[]> {
-  const res = await fetch(`${API_BASE}/insights`, {
+  const res = await fetch(`${getApiBase()}/insights`, {
     cache: "no-store",
   });
   if (!res.ok) {
@@ -129,7 +166,7 @@ export async function getInsights(): Promise<Insight[]> {
  * Marks a commitment as completed.
  */
 export async function completeCommitment(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/commitments/${id}/complete`, {
+  const res = await fetch(`${getApiBase()}/commitments/${id}/complete`, {
     method: "PATCH",
   });
   if (!res.ok) {
@@ -141,7 +178,7 @@ export async function completeCommitment(id: number): Promise<void> {
  * Dismisses an unblocked insight (archives commitment).
  */
 export async function dismissCommitment(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/commitments/${id}/dismiss`, {
+  const res = await fetch(`${getApiBase()}/commitments/${id}/dismiss`, {
     method: "PATCH",
   });
   if (!res.ok) {
@@ -153,7 +190,7 @@ export async function dismissCommitment(id: number): Promise<void> {
  * Resets all demo-tagged memories and commitments from SQLite.
  */
 export async function resetDemoData(): Promise<{ memories_deleted: number; commitments_deleted: number }> {
-  const res = await fetch(`${API_BASE}/demo/reset`, {
+  const res = await fetch(`${getApiBase()}/demo/reset`, {
     method: "POST",
   });
   if (!res.ok) {
@@ -162,4 +199,3 @@ export async function resetDemoData(): Promise<{ memories_deleted: number; commi
   const data = await res.json();
   return data.deleted;
 }
-

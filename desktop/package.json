@@ -1,0 +1,72 @@
+{
+  "name": "friend-os",
+  "productName": "FRIEND.OS",
+  "version": "1.0.0",
+  "description": "Local-first AI memory assistant with proactive memory",
+  "main": "main.js",
+  "author": "FRIEND.OS Team",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64"
+  },
+  "devDependencies": {
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.friendos.app",
+    "productName": "FRIEND.OS",
+    "copyright": "Copyright © 2026 FRIEND.OS",
+    "directories": {
+      "output": "../release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "setup.html",
+      "icon.png",
+      "icon.ico"
+    ],
+    "extraResources": [
+      {
+        "from": "../dist/friend-os-backend",
+        "to": "backend",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../frontend/out",
+        "to": "frontend",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "icon.ico",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": false,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "installerHeaderIcon": "icon.ico",
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "FRIEND.OS",
+      "artifactName": "FRIEND.OS-Setup.exe",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true
+    }
+  }
+}

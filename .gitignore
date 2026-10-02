@@ -36,5 +36,9 @@ yarn-error.log*
 .env*
 .vscode/
 .idea/
-.DS_Store
-Thumbs.db
+# Desktop build outputs
+desktop/node_modules/
+dist/
+release/
+*.spec
+

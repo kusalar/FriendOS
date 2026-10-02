@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FRIEND.OS — First-Run Setup</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: #141416;
+      --border: #27272a;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      user-select: none;
+    }
+    .container {
+      width: 100%;
+      max-width: 580px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .logo-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+    }
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+    .status-card {
+      margin: 24px 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13.5px;
+    }
+    .status-label {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .badge-danger  { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .explanation {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #93c5fd;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn {
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+    .btn-secondary {
+      background: #27272a;
+      color: #f4f4f5;
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: #3f3f46;
+    }
+    .btn-link {
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-decoration: underline;
+      padding: 6px;
+    }
+    .btn-link:hover {
+      color: var(--text);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .progress-section {
+      display: none;
+      margin-top: 16px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo-badge">F</div>
+      <div>
+        <h1>FRIEND.OS Setup</h1>
+        <p class="subtitle">Local-first AI memory that works completely on your device.</p>
+      </div>
+    </div>
+
+    <div class="status-card">
+      <div class="status-row">
+        <span class="status-label">FastAPI Backend</span>
+        <span id="badge-backend" class="status-badge badge-warning"><span class="dot"></span>Checking...</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">SQLite Database</span>
+        <span id="badge-db" class="status-badge badge-warning"><span class="dot"></span>Checking...</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Ollama Service</span>
+        <span id="badge-ollama" class="status-badge badge-warning"><span class="dot"></span>Checking...</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Local Model (Qwen3 4B)</span>
+        <span id="badge-model" class="status-badge badge-warning"><span class="dot"></span>Checking...</span>
+      </div>
+    </div>
+
+    <div id="explanation-box" class="explanation">
+      FRIEND.OS uses Qwen3 4B locally through Ollama. The model is approximately 2.5 GB and is required for AI memory understanding.
+    </div>
+
+    <div id="progress-container" class="progress-section">
+      <div style="font-size: 13px; font-weight: 500;" id="progress-status">Downloading Qwen3 4B...</div>
+      <div class="progress-bar-bg">
+        <div id="progress-fill" class="progress-bar-fill"></div>
+      </div>
+      <div class="progress-text">
+        <span id="progress-details">Connecting to local Ollama service...</span>
+        <span id="progress-percent">0%</span>
+      </div>
+    </div>
+
+    <div class="actions" id="action-buttons">
+      <button id="btn-action" class="btn btn-primary" onclick="handlePrimaryAction()">
+        Checking Status...
+      </button>
+      <button id="btn-secondary" class="btn btn-secondary" onclick="checkHealth()" style="display: none;">
+        Check Again
+      </button>
+      <button id="btn-continue" class="btn btn-link" onclick="continueToApp()">
+        Continue to FRIEND.OS anyway (Offline Mode)
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let currentHealth = null;
+
+    async function checkHealth() {
+      try {
+        if (!window.friendOSDesktop) {
+          document.getElementById('explanation-box').innerText = "Running outside desktop wrapper.";
+          return;
+        }
+
+        const health = await window.friendOSDesktop.getHealth();
+        currentHealth = health;
+        updateUI(health);
+      } catch (err) {
+        document.getElementById('badge-backend').className = 'status-badge badge-danger';
+        document.getElementById('badge-backend').innerHTML = '<span class="dot"></span>Offline';
+        document.getElementById('btn-action').innerText = "Backend Offline (Retrying...)";
+        setTimeout(checkHealth, 2000);
+      }
+    }
+
+    function updateUI(health) {
+      // Backend status
+      const bBadge = document.getElementById('badge-backend');
+      bBadge.className = 'status-badge badge-success';
+      bBadge.innerHTML = '<span class="dot"></span>Online (127.0.0.1)';
+
+      // DB status
+      const dbBadge = document.getElementById('badge-db');
+      if (health.database === 'connected') {
+        dbBadge.className = 'status-badge badge-success';
+        dbBadge.innerHTML = '<span class="dot"></span>Ready';
+      } else {
+        dbBadge.className = 'status-badge badge-danger';
+        dbBadge.innerHTML = '<span class="dot"></span>Error';
+      }
+
+      // Ollama status
+      const olBadge = document.getElementById('badge-ollama');
+      const mBadge = document.getElementById('badge-model');
+      const btnAction = document.getElementById('btn-action');
+      const btnSecondary = document.getElementById('btn-secondary');
+      const explanation = document.getElementById('explanation-box');
+
+      if (!health.ollama.available) {
+        olBadge.className = 'status-badge badge-danger';
+        olBadge.innerHTML = '<span class="dot"></span>Not Detected';
+        mBadge.className = 'status-badge badge-warning';
+        mBadge.innerHTML = '<span class="dot"></span>Unavailable';
+
+        explanation.innerHTML = "<strong>Ollama service is not running or not installed.</strong><br>Ollama is the open-source runner for local AI inference. Please install or launch Ollama to enable local AI reasoning.";
+        btnAction.innerText = "Download Ollama (Official Site)";
+        btnSecondary.style.display = "block";
+        btnAction.onclick = () => window.friendOSDesktop.openExternal('https://ollama.com/download');
+      } else if (!health.ollama.model_present) {
+        olBadge.className = 'status-badge badge-success';
+        olBadge.innerHTML = '<span class="dot"></span>Connected';
+        mBadge.className = 'status-badge badge-warning';
+        mBadge.innerHTML = '<span class="dot"></span>Not Installed';
+
+        explanation.innerHTML = "FRIEND.OS uses Qwen3 4B locally through Ollama. The model is approximately 2.5 GB and is required for AI memory understanding.";
+        btnAction.innerText = "Set up local AI (Pull Qwen3 4B)";
+        btnSecondary.style.display = "none";
+        btnAction.onclick = () => startDownload();
+      } else {
+        olBadge.className = 'status-badge badge-success';
+        olBadge.innerHTML = '<span class="dot"></span>Connected';
+        mBadge.className = 'status-badge badge-success';
+        mBadge.innerHTML = '<span class="dot"></span>Installed';
+
+        explanation.innerHTML = "All local services and AI models are ready! FRIEND.OS is fully operational offline.";
+        btnAction.innerText = "Launch FRIEND.OS";
+        btnSecondary.style.display = "none";
+        btnAction.onclick = () => continueToApp();
+      }
+    }
+
+    async function startDownload() {
+      const btnAction = document.getElementById('btn-action');
+      const progressContainer = document.getElementById('progress-container');
+      btnAction.disabled = true;
+      btnAction.innerText = "Setting up Local AI...";
+      progressContainer.style.display = "block";
+
+      window.friendOSDesktop.onPullProgress((data) => {
+        if (data.status) {
+          document.getElementById('progress-status').innerText = data.status;
+        }
+        if (data.total && data.completed) {
+          const pct = Math.round((data.completed / data.total) * 100);
+          document.getElementById('progress-fill').style.width = pct + '%';
+          document.getElementById('progress-percent').innerText = pct + '%';
+          const mbDone = (data.completed / (1024 * 1024)).toFixed(1);
+          const mbTotal = (data.total / (1024 * 1024)).toFixed(1);
+          document.getElementById('progress-details').innerText = `${mbDone} MB / ${mbTotal} MB`;
+        }
+        if (data.status === 'success' || data.done) {
+          document.getElementById('progress-fill').style.width = '100%';
+          document.getElementById('progress-percent').innerText = '100%';
+          document.getElementById('progress-details').innerText = 'Model successfully installed!';
+          setTimeout(checkHealth, 1000);
+        }
+      });
+
+      try {
+        const result = await window.friendOSDesktop.startModelPull();
+        if (result.success) {
+          checkHealth();
+        } else {
+          document.getElementById('progress-details').innerText = "Setup encountered an issue: " + (result.error || "Unknown error");
+          btnAction.disabled = false;
+          btnAction.innerText = "Retry Setup";
+        }
+      } catch (err) {
+        document.getElementById('progress-details').innerText = "Error: " + err.message;
+        btnAction.disabled = false;
+        btnAction.innerText = "Retry Setup";
+      }
+    }
+
+    function continueToApp() {
+      if (window.friendOSDesktop) {
+        window.friendOSDesktop.launchApp();
+      }
+    }
+
+    // Initial check on load
+    window.addEventListener('DOMContentLoaded', checkHealth);
+  </script>
+</body>
+</html>

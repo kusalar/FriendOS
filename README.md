@@ -281,9 +281,73 @@ friend-os/
 └── README.md                  # Project documentation
 ```
 
+## 12. Windows Installation (Desktop Application)
+
+FRIEND.OS is distributed as a native, self-contained Windows desktop application that requires **no manual Python configuration, no virtual environments, and no terminal commands**.
+
+### Quick Start for End Users
+
+1. **Download the FRIEND.OS Installer**:
+   * Get `FRIEND.OS-Setup.exe` (or `FRIEND.OS-Portable.zip` for portable extraction).
+2. **Run the Installer**:
+   * Double-click `FRIEND.OS-Setup.exe`.
+   * Installs into your user profile directory (`%LOCALAPPDATA%\Programs\FRIEND.OS`).
+   * **No administrator privileges** are required.
+3. **Launch FRIEND.OS**:
+   * Open FRIEND.OS from the Start Menu or Desktop shortcut.
+   * The app automatically starts the local backend, detects an available localhost port, connects to the local SQLite database, and opens the desktop interface.
+4. **Complete Local AI Setup (First Launch Only)**:
+   * FRIEND.OS uses Qwen3 4B locally through Ollama. The model is approximately 2.5 GB and is required for AI memory understanding.
+   * If Ollama is not installed, the setup window provides a link to download it from the official site ([ollama.com](https://ollama.com)).
+   * If Ollama is running but `qwen3:4b` is not yet pulled, click **"Set up local AI"** to initiate the download directly via official local Ollama APIs with live progress.
+5. **FRIEND.OS Runs Completely Locally**:
+   * After Ollama and the Qwen3 4B model are installed, FRIEND.OS is designed to operate without an internet connection.
+
+### Offline Behavior & Privacy Guarantee
+
+* **Offline Normal Operation**: After Ollama and the Qwen3 4B model are installed, FRIEND.OS is designed to operate without an internet connection. Creating memories, searching history, deterministic commitment extraction, proactive dependency matching, and hackathon demo scenarios work without an active internet connection.
+* **Separation of Concerns**:
+  * **Local Application Data**: SQLite storage (`friend_os.db`) is entirely on-disk in `%LOCALAPPDATA%\FRIEND.OS\data\`.
+  * **Local Inference**: AI inference runs purely on local hardware via your local Ollama instance (`qwen3:4b`).
+  * **Optional Network Usage**: An internet connection is only needed during initial setup if you need to download Ollama or pull the `qwen3:4b` model weights.
+* **Security & Transparency**: FRIEND.OS does not intentionally install unrelated software, disable security tools, collect telemetry, or send memory content to external AI services.
+
+### Windows SmartScreen & Code Signing
+
+* **SmartScreen Notice**: Because this installer is built from open-source code without an expensive commercial EV Authenticode certificate, Windows SmartScreen may display an *"Unrecognized app"* notice on first launch. Click **More info → Run anyway** to proceed.
+* **Configuring Authenticode Code Signing**:
+  If you possess an official Windows Authenticode certificate (`.pfx` file), you can sign the installer during the automated build by passing:
+  ```powershell
+  .\build-windows.ps1 -CertificatePath "C:\path\to\cert.pfx" -CertificatePassword "SecretPassword"
+  ```
+  Or by exporting standard electron-builder environment variables:
+  ```powershell
+  $env:CSC_LINK = "C:\path\to\cert.pfx"
+  $env:CSC_KEY_PASSWORD = "SecretPassword"
+  ```
+
+### Data Storage & Uninstallation
+
+* **Database Location**: Persistent user memories are stored in `%LOCALAPPDATA%\FRIEND.OS\data\friend_os.db`.
+* **Technical Logs**: Diagnostic error logs (backend binding, model detection) are written to `%LOCALAPPDATA%\FRIEND.OS\logs\app.log` without logging private memory text.
+* **Uninstallation**: Uninstalling FRIEND.OS via Windows *Settings → Installed Apps* removes the application binaries while safely **preserving your memories and database** in `%LOCALAPPDATA%\FRIEND.OS\data\`.
+
+### Building the Windows Installer from Source
+
+To reproducibly build the installer and portable distribution yourself:
+
+```powershell
+# Run the automated Windows build script
+.\build-windows.ps1
+```
+
+Outputs generated:
+* Installer: `release\FRIEND.OS-Setup.exe` (~95 MB)
+* Portable Package: `release\FRIEND.OS-Portable.zip` (~127 MB)
+
 ---
 
-## 12. Installation & Setup (Windows PowerShell)
+## 13. Developer Setup (Manual PowerShell)
 
 ### Prerequisites
 * **Windows 10/11**
@@ -319,7 +383,7 @@ cd ..
 
 ---
 
-## 13. Running the Project
+## 14. Running the Project (Manual Development)
 
 Run the backend and frontend in **two separate terminal windows**:
 
@@ -341,7 +405,7 @@ npm run dev
 
 ---
 
-## 14. Verification & Testing
+## 15. Verification & Testing
 
 FRIEND.OS includes comprehensive automated backend tests and a production build validator:
 
@@ -372,7 +436,7 @@ Validates strict TypeScript types, component boundaries, and static page optimiz
 
 ---
 
-## 15. Technical Concepts & States
+## 16. Technical Concepts & States
 
 ### Commitment Lifecycle
 Commitments represent tracked relationships between tasks and prerequisites:
@@ -406,7 +470,7 @@ Commitments represent tracked relationships between tasks and prerequisites:
 
 ---
 
-## 16. Current Limitations
+## 17. Current Limitations
 
 In the interest of engineering transparency, FRIEND.OS does not overstate its capabilities:
 
@@ -417,7 +481,7 @@ In the interest of engineering transparency, FRIEND.OS does not overstate its ca
 
 ---
 
-## 17. Roadmap & Future Possibilities
+## 18. Roadmap & Future Possibilities
 
 * **Graph-Based Memory Relations**: Expanding from pairwise dependencies to Directed Acyclic Graphs (DAGs) for multi-step projects.
 * **Local Embedding Vectors**: Augmenting the deterministic matcher with local vector embeddings (`nomic-embed-text`) for higher synonym coverage while preserving local privacy.
@@ -427,7 +491,7 @@ In the interest of engineering transparency, FRIEND.OS does not overstate its ca
 
 ---
 
-## 18. Hackathon Summary
+## 19. Hackathon Summary
 
 > **Qwen3 understands the user's memories.**  
 > **SQLite preserves them.**  

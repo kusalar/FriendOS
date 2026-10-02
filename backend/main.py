@@ -83,6 +83,58 @@ def health_check():
     }
 
 
+@app.get("/health", tags=["Health"])
+def detailed_health_check():
+    """
+    Local health check reporting backend, database, Ollama status, and model availability.
+    Does not expose sensitive memory content.
+    """
+    db_status = "error"
+    try:
+        from backend.database import get_db_connection
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1;")
+            if cursor.fetchone():
+                db_status = "connected"
+    except Exception as e:
+        db_status = f"error: {str(e)}"
+
+    ollama_available = False
+    model_present = False
+    from backend.config import OLLAMA_HOST
+    try:
+        import urllib.request
+        import json
+        req = urllib.request.Request(f"{OLLAMA_HOST}/api/tags")
+        with urllib.request.urlopen(req, timeout=1.5) as resp:
+            if resp.status == 200:
+                ollama_available = True
+                data = json.loads(resp.read().decode("utf-8"))
+                models = data.get("models", [])
+                names = [m.get("name") for m in models if isinstance(m, dict)]
+                model_present = any(
+                    OLLAMA_MODEL in name or name.startswith(OLLAMA_MODEL)
+                    for name in names if name
+                )
+    except Exception:
+        ollama_available = False
+        model_present = False
+
+    return {
+        "status": "online",
+        "app": "FRIEND.OS",
+        "database": db_status,
+        "ollama": {
+            "available": ollama_available,
+            "host": OLLAMA_HOST,
+            "model_configured": OLLAMA_MODEL,
+            "model_present": model_present,
+        },
+    }
+
+
+
 # ============================================================================
 # MEMORIES ENDPOINTS
 # ============================================================================

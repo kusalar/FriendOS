@@ -1,14 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Memory, MemoryStatus } from "@/types";
-import { Check, Archive, RotateCcw, Sparkles } from "lucide-react";
+import { Check, Archive, RotateCcw, MoreHorizontal, Eye, Trash2, AlertTriangle, X } from "lucide-react";
 
 interface MemoryTimelineProps {
   memories: Memory[];
   isLoading: boolean;
   searchQuery: string;
   onUpdateStatus: (id: number, status: MemoryStatus) => Promise<void>;
+  onDeleteMemory?: (id: number) => Promise<void>;
   onInspectMemory?: (memory: Memory) => void;
   activeMemoryId?: number | null;
   connectedMemoryIds?: Set<number>;
@@ -19,10 +20,32 @@ export function MemoryTimeline({
   isLoading,
   searchQuery,
   onUpdateStatus,
+  onDeleteMemory,
   onInspectMemory,
   activeMemoryId,
   connectedMemoryIds = new Set(),
 }: MemoryTimelineProps) {
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [memoryToDelete, setMemoryToDelete] = useState<Memory | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Close open dropdown or dialog on outside click or Escape
+  useEffect(() => {
+    const handleGlobalClick = () => setOpenMenuId(null);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpenMenuId(null);
+        if (!isDeleting) setMemoryToDelete(null);
+      }
+    };
+    window.addEventListener("click", handleGlobalClick);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("click", handleGlobalClick);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isDeleting]);
+
   // Format timestamp e.g. "10:42 AM"
   const formatTime = (isoString: string) => {
     try {
@@ -219,6 +242,56 @@ export function MemoryTimeline({
                           <Archive className="w-3.5 h-3.5" />
                         </button>
                       )}
+
+                      {/* ⋯ More Menu (View / Delete) */}
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenMenuId(openMenuId === memory.id ? null : memory.id);
+                          }}
+                          title="More options"
+                          className={`p-1 rounded transition-colors ${
+                            openMenuId === memory.id
+                              ? "text-white bg-[#1f212c]"
+                              : "text-slate-400 hover:text-white hover:bg-[#1f212c]"
+                          }`}
+                        >
+                          <MoreHorizontal className="w-3.5 h-3.5" />
+                        </button>
+
+                        {openMenuId === memory.id && (
+                          <div
+                            className="absolute right-0 top-7 z-30 w-32 rounded-xl bg-[#14151e] border border-[#2b2d3d] shadow-2xl py-1 text-xs font-sans animate-subtle-in"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOpenMenuId(null);
+                                onInspectMemory && onInspectMemory(memory);
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-1.5 text-slate-300 hover:text-white hover:bg-[#1e202d] text-left transition-colors"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-slate-400" />
+                              <span>View</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setOpenMenuId(null);
+                                setMemoryToDelete(memory);
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 text-left transition-colors border-t border-[#232533]"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                              <span>Delete</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -227,6 +300,81 @@ export function MemoryTimeline({
           </div>
         </div>
       ))}
+
+      {/* Delete Confirmation Modal */}
+      {memoryToDelete && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+          onClick={() => !isDeleting && setMemoryToDelete(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-[#14151e] border border-[#2b2d3d] p-6 shadow-2xl relative font-sans animate-scale-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3 mb-4">
+              <div className="flex items-center gap-2.5 text-rose-400">
+                <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center border border-rose-500/20">
+                  <AlertTriangle className="w-4 h-4 text-rose-400" />
+                </div>
+                <h3 className="text-base font-semibold text-white">Delete Memory</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => !isDeleting && setMemoryToDelete(null)}
+                className="text-slate-500 hover:text-slate-300 transition-colors p-1"
+                disabled={isDeleting}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-400 mb-3">
+              Are you sure you want to permanently delete this memory? This action cannot be undone.
+            </p>
+
+            {/* Display Memory Content */}
+            <div className="p-3 rounded-xl bg-[#0d0e15] border border-[#222432] text-sm text-slate-200 mb-4 font-mono break-words leading-relaxed">
+              &quot;{memoryToDelete.content}&quot;
+            </div>
+
+            {/* Contextual Warning for Connected Memories */}
+            {connectedMemoryIds.has(memoryToDelete.id) && (
+              <div className="flex items-start gap-2 p-3 mb-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 leading-normal">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <span>This memory may be connected to another memory in FRIEND.OS.</span>
+              </div>
+            )}
+
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#1f212c]">
+              <button
+                type="button"
+                onClick={() => setMemoryToDelete(null)}
+                disabled={isDeleting}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-[#1f212c] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!memoryToDelete || !onDeleteMemory) return;
+                  setIsDeleting(true);
+                  try {
+                    await onDeleteMemory(memoryToDelete.id);
+                    setMemoryToDelete(null);
+                  } finally {
+                    setIsDeleting(false);
+                  }
+                }}
+                disabled={isDeleting}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-medium text-white bg-rose-600 hover:bg-rose-500 active:bg-rose-700 transition-colors shadow-sm disabled:opacity-50"
+              >
+                {isDeleting ? "Deleting..." : "Delete memory"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

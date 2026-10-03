@@ -131,6 +131,19 @@ export async function updateMemoryStatus(
 }
 
 /**
+ * Permanently deletes a memory from SQLite storage.
+ */
+export async function deleteMemory(id: number): Promise<void> {
+  const res = await fetch(`${getApiBase()}/memories/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok && res.status !== 204) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new ApiError(errorData.detail || "Failed to delete memory", res.status);
+  }
+}
+
+/**
  * Sends text to Qwen3 via Ollama for structured analysis.
  */
 export async function analyzeText(text: string): Promise<AnalyzeResponse> {
@@ -199,3 +212,18 @@ export async function resetDemoData(): Promise<{ memories_deleted: number; commi
   const data = await res.json();
   return data.deleted;
 }
+
+/**
+ * Permanently deletes all memories and commitments from the database.
+ */
+export async function resetDatabase(): Promise<{ memories_deleted: number; commitments_deleted: number }> {
+  const res = await fetch(`${getApiBase()}/database/reset`, {
+    method: "POST",
+  });
+  if (!res.ok) {
+    throw new ApiError(`Failed to reset database`, res.status);
+  }
+  const data = await res.json();
+  return data.deleted;
+}
+

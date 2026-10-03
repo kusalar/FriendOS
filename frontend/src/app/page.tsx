@@ -23,10 +23,12 @@ import {
   getMemories,
   createMemory,
   updateMemoryStatus,
+  deleteMemory,
   analyzeText,
   getInsights,
   completeCommitment,
   dismissCommitment,
+  resetDatabase,
 } from "@/lib/api";
 import { Check, AlertCircle } from "lucide-react";
 
@@ -202,6 +204,22 @@ export default function Home() {
     }
   };
 
+  // Handle memory deletion (DELETE /memories/{id})
+  const handleDeleteMemory = async (id: number) => {
+    try {
+      await deleteMemory(id);
+      setMemories((prev) => prev.filter((m) => m.id !== id));
+      if (inspectedMemory?.id === id) {
+        setInspectedMemory(null);
+      }
+      showToast("success", "Memory deleted.");
+      await loadInsights();
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to delete memory";
+      showToast("error", errorMsg);
+    }
+  };
+
   // Handle completing a commitment
   const handleCompleteCommitment = async (commitmentId: number) => {
     setIsProcessingInsightId(commitmentId);
@@ -239,12 +257,30 @@ export default function Home() {
     }
   };
 
-  // Set of memory IDs currently connected to an active unblocked insight
+  // Handle deleting entire database
+  const handleResetDatabase = async () => {
+    try {
+      await resetDatabase();
+      setMemories([]);
+      setInsights([]);
+      setSelectedInsight(null);
+      setInspectedMemory(null);
+      showToast("success", "All memories deleted.");
+      await Promise.all([loadMemories(), loadInsights()]);
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Failed to reset database";
+      showToast("error", errorMsg);
+    }
+  };
+
+  // Set of memory IDs currently connected to an active unblocked insight or reminder
   const connectedMemoryIds = useMemo(() => {
     const ids = new Set<number>();
     insights.forEach((ins) => {
       ids.add(ins.source_memory_id);
-      ids.add(ins.evidence_memory_id);
+      if (ins.evidence_memory_id) {
+        ids.add(ins.evidence_memory_id);
+      }
     });
     return ids;
   }, [insights]);
@@ -270,6 +306,7 @@ export default function Home() {
         onOpenDemo={() => setIsDemoOpen(true)}
         onOpenSystemInfo={() => setIsSystemInfoOpen(true)}
         health={health}
+        onResetDatabase={handleResetDatabase}
       />
 
       {/* Center Memory Stream: Spacious, breathable */}
@@ -317,6 +354,7 @@ export default function Home() {
           isLoading={isLoadingMemories}
           searchQuery={searchQuery}
           onUpdateStatus={handleUpdateStatus}
+          onDeleteMemory={handleDeleteMemory}
           onInspectMemory={(m) => {
             setInspectedMemory(m);
             setSelectedInsight(null);

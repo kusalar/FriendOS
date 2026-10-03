@@ -61,10 +61,10 @@ export function ConnectionPanel({
               <ArrowDown className="w-3.5 h-3.5" />
             </div>
 
-            {/* Step 2: Evidence Thought */}
+            {/* Step 2: Evidence Thought / Attempted Action */}
             <div className="p-3.5 rounded-xl bg-[#14151d] border border-[#232532] space-y-1.5">
               <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-semibold">
-                2. New Evidence Memory
+                {selectedInsight.type === "reminder" ? "2. Attempted Action Memory" : "2. New Evidence Memory"}
               </span>
               <p className="text-slate-200 text-xs italic leading-relaxed">
                 &quot;{selectedInsight.evidence}&quot;
@@ -72,21 +72,41 @@ export function ConnectionPanel({
             </div>
 
             {/* Connecting Vector 2 */}
-            <div className="flex flex-col items-center gap-1 text-[10px] font-mono text-emerald-400">
-              <div className="w-px h-5 bg-emerald-500/40" />
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 font-semibold">
-                Dependency satisfied ✓
-              </span>
-              <ArrowDown className="w-3.5 h-3.5" />
-            </div>
+            {selectedInsight.type === "reminder" ? (
+              <div className="flex flex-col items-center gap-1 text-[10px] font-mono text-amber-400">
+                <div className="w-px h-5 bg-amber-500/40" />
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 font-semibold">
+                  Prerequisite not satisfied yet ⚠
+                </span>
+                <ArrowDown className="w-3.5 h-3.5" />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-1 text-[10px] font-mono text-emerald-400">
+                <div className="w-px h-5 bg-emerald-500/40" />
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 font-semibold">
+                  Dependency satisfied ✓
+                </span>
+                <ArrowDown className="w-3.5 h-3.5" />
+              </div>
+            )}
 
-            {/* Step 3: Realized Action */}
-            <div className="p-3.5 rounded-xl bg-[#141d1a] border border-emerald-500/30 space-y-1.5">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 block font-semibold">
-                3. Suggested Next Action
+            {/* Step 3: Realized Action / Guidance */}
+            <div
+              className={`p-3.5 rounded-xl space-y-1.5 ${
+                selectedInsight.type === "reminder"
+                  ? "bg-[#1d1914] border border-amber-500/30"
+                  : "bg-[#141d1a] border border-emerald-500/30"
+              }`}
+            >
+              <span
+                className={`text-[10px] font-mono uppercase tracking-wider block font-semibold ${
+                  selectedInsight.type === "reminder" ? "text-amber-400" : "text-emerald-400"
+                }`}
+              >
+                {selectedInsight.type === "reminder" ? "3. Suggested Next Step" : "3. Suggested Next Action"}
               </span>
               <p className="text-slate-100 text-sm font-semibold">
-                {selectedInsight.suggested_next_action}
+                {selectedInsight.message || selectedInsight.suggested_next_action}
               </p>
             </div>
           </div>

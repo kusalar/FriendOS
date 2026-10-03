@@ -74,13 +74,20 @@ class CommitmentResponse(BaseModel):
 
 
 class InsightResponse(BaseModel):
-    """Schema for proactive 'What Am I Forgetting?' unblocked insights."""
-    type: str = Field(default="unblocked", description="Type of insight, e.g. unblocked")
-    commitment_id: int = Field(..., description="ID of the unblocked commitment")
-    task: str = Field(..., description="Task that is now unblocked and ready for action")
-    dependency: str = Field(..., description="The dependency that was satisfied")
-    evidence: str = Field(..., description="Source text of the evidence memory completing the dependency")
+    """Schema for proactive 'What Am I Forgetting?' unblocked insights and prerequisite reminders."""
+    type: str = Field(default="unblocked", description="Type of insight, e.g. unblocked or reminder")
+    commitment_id: int = Field(..., description="ID of the commitment")
+    task: str = Field(..., description="Task that is unblocked or being attempted")
+    dependency: str = Field(..., description="The prerequisite dependency")
+    evidence: Optional[str] = Field(default=None, description="Source text of evidence or attempted action memory")
     source_text: Optional[str] = Field(default=None, description="Source text of original commitment memory")
     source_memory_id: int = Field(..., description="Memory ID where commitment was originally recorded")
-    evidence_memory_id: int = Field(..., description="Memory ID that provided the completion evidence")
-    suggested_next_action: str = Field(..., description="Immediate recommended action")
+    evidence_memory_id: Optional[int] = Field(default=None, description="Memory ID providing evidence or attempted action")
+    suggested_next_action: Optional[str] = Field(default=None, description="Immediate recommended action")
+
+    # Additional fields for 'reminder' insight type:
+    title: Optional[str] = Field(default=None, description="User-facing title, e.g. You're forgetting something…")
+    message: Optional[str] = Field(default=None, description="Guidance message, e.g. Eat rice first.")
+    explanation: Optional[str] = Field(default=None, description="Contextual explanation")
+    dependency_memory_id: Optional[int] = Field(default=None, description="Reference memory ID")
+

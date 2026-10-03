@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Layers,
   Zap,
@@ -11,6 +11,9 @@ import {
   Play,
   RotateCcw,
   SlidersHorizontal,
+  Trash2,
+  AlertTriangle,
+  X,
 } from "lucide-react";
 import { SystemHealth } from "@/types";
 
@@ -24,6 +27,7 @@ interface SidebarProps {
   onOpenDemo: () => void;
   onOpenSystemInfo: () => void;
   health: SystemHealth | null;
+  onResetDatabase?: () => Promise<void>;
 }
 
 export function Sidebar({
@@ -36,14 +40,17 @@ export function Sidebar({
   onOpenDemo,
   onOpenSystemInfo,
   health,
+  onResetDatabase,
 }: SidebarProps) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const isOnline = Boolean(health && health.status === "online");
 
   const navItems = [
     { id: "all", label: "All memories", icon: Layers, count: totalCount },
     {
       id: "unblocked",
-      label: "Unblocked",
+      label: "What am I forgetting?",
       icon: Zap,
       count: unblockedCount,
       highlight: unblockedCount > 0,
@@ -140,6 +147,18 @@ export function Sidebar({
             );
           })}
         </nav>
+
+        {/* Dangerous Action below Archived */}
+        <div className="pt-2 border-t border-[#1a1b24]">
+          <button
+            type="button"
+            onClick={() => setShowDeleteModal(true)}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-400/60 hover:text-rose-400 hover:bg-rose-950/20 transition-all text-left group"
+          >
+            <Trash2 className="w-3.5 h-3.5 text-rose-400/50 group-hover:text-rose-400 transition-colors shrink-0" />
+            <span>Delete database</span>
+          </button>
+        </div>
       </div>
 
       {/* Demo Mode & Footer */}
@@ -167,6 +186,68 @@ export function Sidebar({
           A living memory space that remembers what was waiting for what.
         </div>
       </div>
+
+      {/* Delete Database Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
+          onClick={() => !isDeleting && setShowDeleteModal(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-[#14151e] border border-[#2b2d3d] p-6 shadow-2xl relative font-sans animate-scale-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3 mb-4">
+              <div className="flex items-center gap-2.5 text-rose-400">
+                <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center border border-rose-500/20">
+                  <AlertTriangle className="w-4 h-4 text-rose-400" />
+                </div>
+                <h3 className="text-base font-semibold text-white">Delete your FRIEND.OS database?</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => !isDeleting && setShowDeleteModal(false)}
+                className="text-slate-500 hover:text-slate-300 transition-colors p-1"
+                disabled={isDeleting}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed mb-6">
+              This permanently deletes all memories, commitments, evidence relationships, and local history. This cannot be undone.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1f212c]">
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-[#1f212c] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!onResetDatabase) return;
+                  setIsDeleting(true);
+                  try {
+                    await onResetDatabase();
+                    setShowDeleteModal(false);
+                  } finally {
+                    setIsDeleting(false);
+                  }
+                }}
+                disabled={isDeleting}
+                className="px-4 py-2 rounded-xl text-xs font-medium text-white bg-rose-600 hover:bg-rose-500 active:bg-rose-700 transition-colors shadow-sm disabled:opacity-50"
+              >
+                {isDeleting ? "Deleting..." : "Delete database"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

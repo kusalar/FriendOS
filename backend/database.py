@@ -1,7 +1,12 @@
 import sqlite3
 from typing import List, Optional, Dict, Any
 from backend.config import DATABASE_PATH
-from backend.matcher import is_dependency_satisfied
+from backend.matcher import (
+    is_dependency_satisfied,
+    is_task_attempted,
+    format_reminder_message,
+    format_reminder_explanation,
+)
 
 
 def get_db_connection() -> sqlite3.Connection:
@@ -82,7 +87,18 @@ def get_memories(limit: int = 100, status: Optional[str] = None) -> List[Dict[st
     """
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        if status:
+        if status == "unblocked":
+            cursor.execute(
+                """
+                SELECT DISTINCT m.* FROM memories m
+                JOIN commitments c ON (m.id = c.source_memory_id OR m.id = c.evidence_memory_id)
+                WHERE c.status = 'unblocked'
+                ORDER BY m.created_at DESC, m.id DESC
+                LIMIT ?;
+                """,
+                (limit,),
+            )
+        elif status:
             cursor.execute(
                 """
                 SELECT * FROM memories
@@ -156,6 +172,60 @@ def update_memory_status(memory_id: int, status: str) -> Optional[Dict[str, Any]
         cursor.execute("SELECT * FROM memories WHERE id = ?;", (memory_id,))
         row = cursor.fetchone()
         return dict(row) if row else None
+
+
+def delete_memory(memory_id: int) -> bool:
+    """
+    Permanently delete a memory by its ID with correct relational semantics:
+    1. Verify memory exists; return False if not found.
+    2. Commitments where source_memory_id = memory_id are deleted.
+    3. Commitments where evidence_memory_id = memory_id are preserved:
+       - If status == 'unblocked', status transitions back to 'waiting', evidence_memory_id = NULL.
+       - If status == 'completed', status remains 'completed', evidence_memory_id = NULL.
+       - Any other status retains its status with evidence_memory_id = NULL.
+    4. The memory is deleted from the memories table.
+    All operations execute atomically within a single transaction.
+    """
+    conn = get_db_connection()
+    try:
+        with conn:
+            cursor = conn.cursor()
+            # 1. Check if memory exists
+            cursor.execute("SELECT id FROM memories WHERE id = ?;", (memory_id,))
+            if not cursor.fetchone():
+                return False
+
+            # 2. Delete commitments whose source is this memory
+            cursor.execute(
+                "DELETE FROM commitments WHERE source_memory_id = ?;",
+                (memory_id,),
+            )
+
+            # 3. Update commitments whose evidence is this memory:
+            # - unblocked -> waiting, evidence_memory_id = NULL
+            # - completed -> remains completed, evidence_memory_id = NULL
+            # - any other status -> evidence_memory_id = NULL
+            cursor.execute(
+                """
+                UPDATE commitments
+                SET status = CASE WHEN status = 'unblocked' THEN 'waiting' ELSE status END,
+                    evidence_memory_id = NULL
+                WHERE evidence_memory_id = ?;
+                """,
+                (memory_id,),
+            )
+
+            # 4. Delete the memory
+            cursor.execute(
+                "DELETE FROM memories WHERE id = ?;",
+                (memory_id,),
+            )
+            return True
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
 
 
 # ============================================================================
@@ -338,6 +408,83 @@ def get_unblocked_insights() -> List[Dict[str, Any]]:
     return insights
 
 
+def get_reminder_insights() -> List[Dict[str, Any]]:
+    """
+    Detects when a user's recent active memory attempts an action that has an
+    unsatisfied prerequisite (waiting commitment).
+    Returns proactive reminder insights: "You're forgetting something…".
+    """
+    reminders = []
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT c.*, m.content as source_content
+            FROM commitments c
+            JOIN memories m ON c.source_memory_id = m.id
+            WHERE c.status = 'waiting'
+            ORDER BY c.created_at DESC;
+            """
+        )
+        waiting_commitments = [dict(row) for row in cursor.fetchall()]
+        if not waiting_commitments:
+            return []
+
+        cursor.execute(
+            """
+            SELECT * FROM memories
+            WHERE status = 'active'
+            ORDER BY created_at DESC, id DESC
+            LIMIT 50;
+            """
+        )
+        active_memories = [dict(row) for row in cursor.fetchall()]
+
+        for c in waiting_commitments:
+            dep_text = c["dependency"]
+            task_text = c["task"]
+            source_id = c["source_memory_id"]
+
+            for mem in active_memories:
+                if mem["id"] == source_id:
+                    continue
+
+                # If this memory satisfies the dependency, do not warn
+                if is_dependency_satisfied(dep_text, mem["content"]):
+                    continue
+
+                # If this memory attempts the target task now:
+                if is_task_attempted(task_text, mem["content"]):
+                    msg = format_reminder_message(dep_text)
+                    explanation = format_reminder_explanation(task_text, dep_text)
+                    reminders.append({
+                        "type": "reminder",
+                        "commitment_id": c["id"],
+                        "task": c["task"],
+                        "dependency": c["dependency"],
+                        "evidence": mem["content"],
+                        "source_text": c["source_content"],
+                        "source_memory_id": c["source_memory_id"],
+                        "evidence_memory_id": mem["id"],
+                        "dependency_memory_id": mem["id"],
+                        "suggested_next_action": msg,
+                        "title": "You're forgetting something…",
+                        "message": msg,
+                        "explanation": explanation,
+                    })
+                    break
+    return reminders
+
+
+def get_all_insights() -> List[Dict[str, Any]]:
+    """
+    Fetches all proactive insights: unblocked completions + prerequisite reminders.
+    """
+    unblocked = get_unblocked_insights()
+    reminders = get_reminder_insights()
+    return unblocked + reminders
+
+
 def complete_commitment(commitment_id: int) -> Optional[Dict[str, Any]]:
     """
     Marks an unblocked or waiting commitment as completed.
@@ -378,3 +525,26 @@ def reset_demo_data() -> Dict[str, int]:
 
         conn.commit()
         return {"memories_deleted": memories_deleted, "commitments_deleted": commitments_deleted}
+
+
+def reset_entire_database() -> Dict[str, int]:
+    """
+    Transactionally clears all records from commitments and memories tables.
+    Preserves database schema and table definitions without leaving orphans.
+    """
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM commitments;")
+        commitments_deleted = cursor.rowcount
+        cursor.execute("DELETE FROM memories;")
+        memories_deleted = cursor.rowcount
+        try:
+            cursor.execute("DELETE FROM sqlite_sequence WHERE name IN ('commitments', 'memories');")
+        except Exception:
+            pass
+        conn.commit()
+        return {
+            "memories_deleted": memories_deleted,
+            "commitments_deleted": commitments_deleted,
+        }
+

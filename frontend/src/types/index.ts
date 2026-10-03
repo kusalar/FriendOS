@@ -37,6 +37,11 @@ export interface Insight {
   evidence: string;
   source_text?: string;
   source_memory_id: number;
-  evidence_memory_id: number;
-  suggested_next_action: string;
+  evidence_memory_id?: number;
+  suggested_next_action?: string;
+  title?: string;
+  message?: string;
+  explanation?: string;
+  dependency_memory_id?: number;
 }
+

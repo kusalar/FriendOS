@@ -20,15 +20,18 @@ from backend.database import (
     get_memory_by_id,
     search_memories,
     update_memory_status,
+    delete_memory,
     create_commitment,
     get_commitments,
     get_commitment_by_id,
     update_commitment_status,
     check_and_resolve_dependencies,
     get_unblocked_insights,
+    get_all_insights,
     complete_commitment,
     dismiss_insight,
     reset_demo_data,
+    reset_entire_database,
 )
 from backend.models import (
     MemoryCreate,
@@ -168,14 +171,35 @@ def create_memory_endpoint(payload: MemoryCreate):
 
     # Fast heuristic extraction for conditional commitments if not explicitly provided
     if not task or not dependency:
+        # Forward order: [Task clause] (after|once|when|as soon as) [Dependency clause]
         cond_match = re.search(
-            r"(?:i will|i'll|plan to|need to|agreed to)\s+(.*?)\s+(?:after|once|when)\s+(.*)",
+            r"(?:i will|i'll|i have to|i've to|i need to|i must|i should|i plan to|i'm going to|i am going to|going to|plan to|need to|agreed to|we will|we'll)\s+(.*?)\s+(?:after|once|when|as soon as)\s+(.*)",
             content_clean,
             re.IGNORECASE,
         )
         if cond_match:
             task = cond_match.group(1).strip().rstrip(".").capitalize()
             dependency = cond_match.group(2).strip().rstrip(".")
+        else:
+            # Reversed order: (After|Once|When|As soon as) [Dependency clause], [Task clause]
+            rev_match = re.search(
+                r"^(?:after|once|when|as soon as)\s+(.*?),\s*(?:i will|i'll|i have to|i need to|i must|i should|i plan to|i'm going to|i am going to|i)?\s*(.*)",
+                content_clean,
+                re.IGNORECASE,
+            )
+            if rev_match:
+                dependency = rev_match.group(1).strip().rstrip(".")
+                task = rev_match.group(2).strip().rstrip(".").capitalize()
+            else:
+                # Direct action order: e.g. "Submit my application after I receive my certificate"
+                direct_match = re.search(
+                    r"^([a-zA-Z\s]+?)\s+(?:after|once|when|as soon as)\s+(.*)",
+                    content_clean,
+                    re.IGNORECASE,
+                )
+                if direct_match and not any(w in direct_match.group(1).lower().split() for w in ["i", "he", "she", "they", "we", "the", "this", "it"]):
+                    task = direct_match.group(1).strip().rstrip(".").capitalize()
+                    dependency = direct_match.group(2).strip().rstrip(".")
 
     if task and dependency:
         create_commitment(
@@ -229,6 +253,17 @@ def update_status(memory_id: int, payload: MemoryStatusUpdate):
     return updated
 
 
+@app.delete("/memories/{memory_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Memories"])
+def delete_memory_endpoint(memory_id: int):
+    """
+    Permanently delete a specific memory by ID and clean up associated commitments.
+    """
+    deleted = delete_memory(memory_id=memory_id)
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Memory not found")
+    return None
+
+
 # ============================================================================
 # PROACTIVE MEMORY / "WHAT AM I FORGETTING?" ENDPOINTS
 # ============================================================================
@@ -237,11 +272,10 @@ def update_status(memory_id: int, payload: MemoryStatusUpdate):
 def list_insights():
     """
     Signature Proactive Memory Feature:
-    Returns unblocked commitments where a recorded dependency was verified as completed
-    by a subsequent memory, alerting the user to tasks they may be forgetting.
+    Returns unblocked commitments and prerequisite reminders alerting the user to tasks they may be forgetting.
     Uses deterministic SQLite matching with zero LLM query overhead.
     """
-    return get_unblocked_insights()
+    return get_all_insights()
 
 
 @app.get("/commitments", response_model=List[CommitmentResponse], tags=["Commitments"])
@@ -300,6 +334,18 @@ def reset_demo_endpoint():
     """
     result = reset_demo_data()
     return {"status": "ok", "message": "Demo data reset successfully", "deleted": result}
+
+
+@app.post("/database/reset", tags=["Database"])
+@app.delete("/database", tags=["Database"])
+def reset_database_endpoint():
+    """
+    Permanently clears all memories, commitments, and dependency relationships from the local database.
+    Does not delete SQLite files, Ollama, models, or application binaries.
+    """
+    result = reset_entire_database()
+    return {"status": "ok", "message": "All memories deleted.", "deleted": result}
+
 
 
 # ============================================================================
